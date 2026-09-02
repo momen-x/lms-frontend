@@ -33,7 +33,7 @@ export function RegisterForm() {
       confirmPassword: "",
       isAgree: false,
     },
-    mode: "onChange",
+    mode: "onBlur",
   });
   const { mutate: submitRegister, isPending } = useRegister();
 
