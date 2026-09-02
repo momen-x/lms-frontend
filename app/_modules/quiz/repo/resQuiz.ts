@@ -1,8 +1,10 @@
 import { api } from "@/utils/axiosInstance";
 import { CreateQuizData } from "../dto/create-quiz";
 import { UpdateQuizData } from "../dto/update-quiz";
-import { Quiz } from "../entity/quiz";
+import { Quiz } from "../entities/quiz";
 import { IQuizAPI } from "./quiz";
+import { AnalysisQuizResponse } from "../entities/analysis-quiz-response";
+import { AnalysisStudentPerformance } from "../entities/analysis-student-performance";
 
 const BASE_URL = "/api/quizzes";
 
@@ -38,6 +40,24 @@ export const resQuiz: IQuizAPI = {
 
   delete: async function (quizId: string): Promise<Quiz> {
     const response = await api.delete<Quiz>(`${BASE_URL}/${quizId}`);
+
+    return response.data;
+  },
+  analysisQuizPerformance: async function (
+    quizId: string,
+  ): Promise<AnalysisQuizResponse> {
+    const response = await api.get<AnalysisQuizResponse>(
+      `${BASE_URL}/${quizId}/analysis`,
+    );
+
+    return response.data;
+  },
+  analysisStudentQuiz: async function (
+    quizId: string,
+  ): Promise<AnalysisStudentPerformance> {
+    const response = await api.get<AnalysisStudentPerformance>(
+      `${BASE_URL}/${quizId}/student-performance`,
+    );
 
     return response.data;
   },

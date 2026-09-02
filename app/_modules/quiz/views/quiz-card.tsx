@@ -8,6 +8,7 @@ import {
   RotateCcw,
   Target,
   Trash2,
+  Eye,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -20,11 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Quiz } from "../entity/quiz";
+import { Quiz } from "../entities/quiz";
 import { useQuizDialog } from "../context/quiz-dialog-context";
 import { useDeleteQuiz } from "../hooks/useDeleteQuiz";
 import { toast } from "react-toastify";
 import { getErrorMessage } from "@/utils/get-axios-error-message";
+import { DropdownMenuLinkItem } from "../../../../components/ui/dropdown-menu";
 
 interface QuizItemProps {
   quiz: Quiz;
@@ -110,6 +112,13 @@ export default function QuizCard({ quiz }: QuizItemProps) {
           />
 
           <DropdownMenuContent align="end" className="z-50 w-40">
+            <DropdownMenuLinkItem
+              href={`/instructor-dashboard/quizzes/${quiz.id}`}
+            >
+              {" "}
+              <Eye className="mr-2 size-3.5" /> View{" "}
+            </DropdownMenuLinkItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 openUpdateQuiz(quiz);

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { CreateQuizData } from "../dto/create-quiz";
-import { Quiz } from "../entity/quiz";
+import { Quiz } from "../entities/quiz";
 import { useUpdateQuiz } from "../hooks/useUpdateQuiz";
 
 import QuizForm from "./quiz-form";

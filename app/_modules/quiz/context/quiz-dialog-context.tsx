@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { Quiz } from "../entity/quiz";
+import { Quiz } from "../entities/quiz";
 
 import CreateQuiz from "../views/create-quiz";
 import UpdateQuiz from "../views/update-quiz";
