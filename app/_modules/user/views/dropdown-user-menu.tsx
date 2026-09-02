@@ -1,11 +1,5 @@
 "use client";
-import {
-  User,
-  ChevronDown,
-  SunMoon,
-  LogOut,
-  Check,
-} from "lucide-react";
+import { User, ChevronDown, SunMoon, LogOut, Check } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,6 +23,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/utils/get-axios-error-message";
 import { AUTH_ROUTES } from "../../auth/utils/constants";
+import { clearUserAiChats } from "../../ai/utils/clear-user-ai-chats";
 
 export function ProfileDropdown() {
   const { data: user } = useGetCurrentUser();
@@ -41,11 +36,12 @@ export function ProfileDropdown() {
     if (user?.email) return user.email.substring(0, 2).toUpperCase();
     return "GU";
   };
-
+  const userId = user?.id ?? "";
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
         toast.success("Logged out successfully");
+        clearUserAiChats(userId);
         router.push(AUTH_ROUTES.login);
         router.refresh();
       },
