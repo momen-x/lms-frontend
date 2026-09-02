@@ -250,7 +250,7 @@ export default function MyLearningView() {
             {filteredEnrollments.map((enrollment) => {
               const progress = Math.round(enrollment.progress ?? 0);
               const isCompleted = progress === 100;
-              const continueLearHref = `/courses/${enrollment.courseId}/learning`;
+              const continueLearHref = `/student-dashboard/courses/${enrollment.courseId}`;
 
               return (
                 <Card

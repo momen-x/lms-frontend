@@ -1,6 +1,16 @@
 "use client";
 
-import { BookOpen, Clock3, Eye, EyeOff, FileText, Pencil } from "lucide-react";
+import {
+  BookOpen,
+  Clock3,
+  Eye,
+  EyeOff,
+  FileText,
+  Loader2,
+  Pencil,
+  RefreshCw,
+  Sparkles,
+} from "lucide-react";
 import { useParams } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,9 +25,12 @@ import transformingTheDateToATextString from "@/utils/from-date-to-string";
 import LessonMedia from "../../media/views/lesson-media";
 
 import { formatDuration } from "@/utils/format-duration";
-import {
-  useLessonDialog,
-} from "../context/lesson-dialog-context";
+import { useLessonDialog } from "../context/lesson-dialog-context";
+import { useGenerateQuizFromLesson } from "../../ai/hooks/useGenerateQuizFromLesson";
+import { toast } from "react-toastify";
+import { getErrorMessage } from "@/utils/get-axios-error-message";
+import { AiGenerateViewer } from "../../ai/views/ai-generate-viewer";
+import { useGetGeneratedLessonQuiz } from "../../ai/hooks/useGetGeneratedLessonQuiz";
 
 export default function LessonDetails() {
   const { openUpdateLesson } = useLessonDialog();
@@ -26,7 +39,41 @@ export default function LessonDetails() {
   }>();
 
   const lessonId = params.id;
+  const {
+    mutate: generateQuiz,
+    isPending,
+    data: quizQuestions,
+  } = useGenerateQuizFromLesson();
+  const { data: savedQuiz } = useGetGeneratedLessonQuiz(lessonId);
+  const quizData =
+    quizQuestions ??
+    (savedQuiz ? { content: savedQuiz.content, finishReason: null } : null);
 
+  const handleGenerateQuiz = async () => {
+    if (!params.id) {
+      toast.error("invalid lesson id");
+      return;
+    }
+    generateQuiz(params.id, {
+      onSuccess: (response) => {
+        if (response.cached) {
+          toast.info(
+            "The lesson content hasn’t changed, so the existing AI-generated quiz is still up to date.",
+          );
+          return;
+        }
+
+        toast.success("AI quiz generated from the lesson successfully.");
+      },
+      onError: (error) => {
+        toast.error(
+          getErrorMessage(error) ??
+            "Failed to generate questions. Please try again.",
+        );
+        console.error("Quiz generation error:", error);
+      },
+    });
+  };
   const {
     data: lesson,
     isLoading,
@@ -151,6 +198,51 @@ export default function LessonDetails() {
           </div>
         </div>
       </section>
+
+      {/* Ai  */}
+      <div>
+        <Button
+          onClick={handleGenerateQuiz}
+          disabled={isPending}
+          variant="outline"
+          className="
+    border-purple-500/40
+    bg-purple-500/5
+    text-purple-600
+    transition-colors
+    hover:border-purple-500/70
+    hover:bg-purple-500/10
+    hover:text-purple-700
+    dark:text-purple-300
+    dark:hover:text-purple-200
+    mb-5
+  "
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="size-4 animate-spin mr-2" />
+              generating
+            </>
+          ) : savedQuiz ? (
+            <>
+              <RefreshCw className="size-4" />
+              Regenerate Suggested quiz questions
+            </>
+          ) : (
+            <>
+              <Sparkles className="size-4" />
+              Suggesting quiz questions for this lesson
+            </>
+          )}
+        </Button>
+        {quizData && (
+          <AiGenerateViewer
+            planData={quizData}
+            title=" Your AI Questions Suggesting"
+            defaultOpen={false}
+          />
+        )}
+      </div>
 
       <section className="min-w-0 overflow-hidden rounded-2xl border bg-card shadow-sm">
         <LessonMedia lessonId={lessonId} embedded />

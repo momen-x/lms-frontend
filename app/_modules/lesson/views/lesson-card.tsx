@@ -103,17 +103,18 @@ export default function LessonCard({
         />
 
         <DropdownMenuContent align="end" className="z-50 w-40">
-            <DropdownMenuItem onClick={() => openCreateMedia(lesson.id)}>
-              <CirclePlay className="mr-2 size-3.5" />
-              Add Media
-            </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            <DropdownMenuLinkItem href={onView}>
-              <ReceiptText className="mr-2 size-3.5" />
-              View
-            </DropdownMenuLinkItem>
+          <DropdownMenuLinkItem href={onView}>
+            <ReceiptText className="mr-2 size-3.5" />
+            View
+          </DropdownMenuLinkItem>
+          <DropdownMenuSeparator />
 
-            <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => openCreateMedia(lesson.id)}>
+            <CirclePlay className="mr-2 size-3.5" />
+            Add Media
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
 
           <DropdownMenuItem
             onClick={() => {

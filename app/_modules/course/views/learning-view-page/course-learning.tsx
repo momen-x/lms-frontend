@@ -1,16 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2 } from "lucide-react";
 
-import { useGetCourseLearning } from "../../hooks/useGetCourseLearning";
+import { Loader2 } from "lucide-react";
 import LearningSidebar from "./learning-sidebar";
 import LearningContent from "./learning-content";
 import LearningNavigation from "./learning-navigation";
-import { useCompleteLesson } from "@/app/_modules/enrollment/hooks/useCompleteLesson";
 import QuizLearningContent from "@/app/_modules/quiz-attempt/views/learning-view-quizzes/quiz-learning-content";
 import ReviewSection from "@/app/_modules/review/views/review-section";
+
+import { useGetCourseLearning } from "../../hooks/useGetCourseLearning";
 import { useUpdateLearningPosition } from "@/app/_modules/enrollment/hooks/useUpdateLearningPosition";
+import { useCompleteLesson } from "@/app/_modules/enrollment/hooks/useCompleteLesson";
+
 import {
   getInitialLearningItem,
   type SelectedLearningItem,
