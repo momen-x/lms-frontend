@@ -12,7 +12,6 @@ const CertificateVerificationPage = async ({
   params,
 }: TParams) => {
   const { id: certificateNumber } = await params;
-  console.log("the id is : ", certificateNumber);
 
   return (
     <PublicCertificateVerification

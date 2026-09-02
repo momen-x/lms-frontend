@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 import LoadingPage from "@/app/loading";
 import { useGetCurrentUser } from "@/app/_modules/user/hooks/useGetCurrentUser";
+import { OfflineState } from "@/components/sharing/off-line-state";
+import { isNetworkError } from "@/utils/is-network-error";
 
 type GuestGuardProps = {
   children: ReactNode;
@@ -18,10 +20,11 @@ export default function GuestGuard({
 }: GuestGuardProps) {
   const router = useRouter();
 
-  const { data: user, isLoading, isError } = useGetCurrentUser();
+  const { data: user, isLoading, isError, error, refetch } =
+    useGetCurrentUser();
 
   useEffect(() => {
-    if (!isLoading && !isError && user) {
+    if (!isLoading && user) {
       router.replace(redirectTo);
     }
   }, [isLoading, isError, user, router, redirectTo]);
@@ -36,7 +39,11 @@ export default function GuestGuard({
    *
    * You may replace this with a shared error component.
    */
-  if (isError) {
+  if (!user && isError && isNetworkError(error)) {
+    return <OfflineState onRetry={() => refetch()} />;
+  }
+
+  if (!user && isError) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         Unable to verify your session.

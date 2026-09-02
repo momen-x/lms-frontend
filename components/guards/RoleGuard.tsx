@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import LoadingPage from "@/app/loading";
 import { useGetCurrentUser } from "@/app/_modules/user/hooks/useGetCurrentUser";
 import type { UserRole } from "@/app/_modules/user/entity/user";
+import { OfflineState } from "@/components/sharing/off-line-state";
+import { isNetworkError } from "@/utils/is-network-error";
 
 type RoleGuardProps = {
   children: ReactNode;
@@ -21,12 +23,13 @@ export default function RoleGuard({
 }: RoleGuardProps) {
   const router = useRouter();
 
-  const { data: user, isLoading, isError } = useGetCurrentUser();
+  const { data: user, isLoading, isError, error, refetch } =
+    useGetCurrentUser();
 
   const isAuthorized = Boolean(user && allowedRoles.includes(user.role));
 
   useEffect(() => {
-    if (isLoading || isError) {
+    if (isLoading || (!user && isError)) {
       return;
     }
 
@@ -44,7 +47,11 @@ export default function RoleGuard({
     return <LoadingPage />;
   }
 
-  if (isError) {
+  if (!user && isError && isNetworkError(error)) {
+    return <OfflineState onRetry={() => refetch()} />;
+  }
+
+  if (!user && isError) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         Unable to verify your permissions.

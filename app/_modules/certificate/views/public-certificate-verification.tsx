@@ -29,7 +29,6 @@ export default function PublicCertificateVerification({
     isFetching,
     refetch,
   } = useGetPublicCertificateByNumber(certificateNumber);
-  console.log("the issues is : ", certificate);
   if (isLoading) {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
