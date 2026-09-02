@@ -20,7 +20,6 @@ export const resQuestionBank: IQuestionsBankAPI = {
     const res = await api.get<
       { questionBank: QuestionsBank; questionCount: number }[]
     >(`/api/courses/${courseId}/question-banks`);
-    console.log("the result is ,", res.data);
     return res.data.map((item) => ({
       questionsBank: item.questionBank,
       questionCount: item.questionCount,

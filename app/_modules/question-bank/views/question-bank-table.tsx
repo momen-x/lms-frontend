@@ -214,10 +214,7 @@ export default function QuestionBanksTable({
 
                         <DropdownMenuItem
                           onClick={() => {
-                            console.log(
-                              "the question bank id is : ",
-                              questionsBank.id,
-                            );
+                           
                             openUpdateQuestionsBank(questionsBank);
                           }}
                         >
