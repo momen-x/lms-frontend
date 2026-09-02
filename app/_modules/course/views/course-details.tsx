@@ -302,6 +302,10 @@ export default function CourseDetails({
           </div>
         </TabsContent>
       </Tabs>
+
+      <div>
+       
+      </div>
     </div>
   );
 }

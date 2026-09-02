@@ -9,6 +9,14 @@ import { useRouter } from "next/navigation";
 import { Course } from "../entities/course";
 
 export default function InstructorCoursesTable() {
+  //will remove it, just for testing
+  // const handleAiQuizAnalyzes = async () => {
+  //   const res = await api.post(
+  //     "/api/quizzes/cmszzxq8o003a2cbv52hrjw4l/ai/instructor-analysis",
+  //   );
+  //   console.log("the response is : ", res.data);
+  // };
+
   const router = useRouter();
   const { data: courses, isLoading, isError } = useGetInstructorCourses();
 
@@ -23,6 +31,7 @@ export default function InstructorCoursesTable() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 bg-background text-foreground min-h-screen">
       <div className="flex items-center justify-between">
+        {/* <Button onClick={handleAiQuizAnalyzes} className={"p-3 bg-amber-500 "}>Quiz analysis</Button> */}
         <div>
           <h1 className="text-2xl font-bold tracking-tight">My Courses</h1>
           <p className="text-sm text-muted-foreground">
