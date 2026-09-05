@@ -179,7 +179,7 @@ export default function CourseQuizzes({ courseId }: CourseQuizzesProps) {
       )}
 
       <div>
-        {quizData && (
+        {quizData?.content && (
           <AiGenerateViewer
             planData={quizData}
             title=" Your AI Question Quiz Suggesting"

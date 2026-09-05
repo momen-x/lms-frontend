@@ -369,7 +369,7 @@ export default function QuizLearningContent({
               No saved analysis is available yet.
             </p>
           </div>
-        ) : performanceAnalysis ? (
+        ) : performanceAnalysis?.analysis ? (
           <StudentQuizAiAnalysis
             data={performanceAnalysis}
             defaultOpen={false}

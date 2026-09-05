@@ -235,7 +235,7 @@ export default function LessonDetails() {
             </>
           )}
         </Button>
-        {quizData && (
+        {quizData?.content && (
           <AiGenerateViewer
             planData={quizData}
             title=" Your AI Questions Suggesting"

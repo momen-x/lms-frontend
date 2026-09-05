@@ -238,7 +238,8 @@ export function QuizDashboard({ quizId }: QuizDashboardProps) {
       <div className="mt-7">
         {isInstructorAnalysisLoading ? (
           <AiGeneratingSkeleton />
-        ) : isInstructorAnalysisError ? null : getAnalysis ? (
+        ) : isInstructorAnalysisError ? null : getAnalysis?.analysis &&
+          getAnalysis?.metrics ? (
           <QuizInstructorAiAnalysis
             analysisData={{
               analysis: getAnalysis.analysis,

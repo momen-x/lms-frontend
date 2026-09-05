@@ -150,7 +150,7 @@ export default function CourseSections({ courseId }: CourseSectionsProps) {
               </Button>
             </div>
           </CardHeader>
-          {lessonsData && (
+          {lessonsData?.content && (
             <AiGenerateViewer
               planData={lessonsData}
               title=" Your AI Lessons suggested"
