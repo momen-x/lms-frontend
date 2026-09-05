@@ -138,7 +138,7 @@ export function QuizDashboard({ quizId }: QuizDashboardProps) {
                 <Loader2 className="size-4 animate-spin" />
                 Analyzing...
               </>
-            ) : getAnalysis ? (
+            ) : getAnalysis?.analysis ? (
               <>
                 <RefreshCw className="size-4" />
                 Regenerate Analysis

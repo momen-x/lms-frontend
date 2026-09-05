@@ -223,7 +223,7 @@ export default function LessonDetails() {
               <Loader2 className="size-4 animate-spin mr-2" />
               generating
             </>
-          ) : savedQuiz ? (
+          ) : savedQuiz?.content ? (
             <>
               <RefreshCw className="size-4" />
               Regenerate Suggested quiz questions

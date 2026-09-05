@@ -128,7 +128,7 @@ export default function LearningContent({ lesson }: LearningContentProps) {
                 <Loader2 className="size-4 animate-spin" />
                 Generating...
               </>
-            ) : summary ? (
+            ) : summary?.content ? (
               <>
                 <RefreshCw className="size-4" />
                 Regenerate Summary

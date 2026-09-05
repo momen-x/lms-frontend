@@ -136,7 +136,7 @@ export default function CourseSections({ courseId }: CourseSectionsProps) {
                     <Loader2 className="size-4 animate-spin mr-2" />
                     generating...
                   </>
-                ) : savedLessons ? (
+                ) : savedLessons?.content ? (
                   <>
                     <RefreshCw className="size-4" />
                     Regenerate Suggested Lessons

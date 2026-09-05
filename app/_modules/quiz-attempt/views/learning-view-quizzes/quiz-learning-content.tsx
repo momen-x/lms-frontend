@@ -204,7 +204,7 @@ export default function QuizLearningContent({
                   <Loader2 className="size-4 animate-spin" />
                   Analyzing...
                 </>
-              ) : performanceAnalysis ? (
+              ) : performanceAnalysis?.analysis ? (
                 <>
                   <RefreshCw className="size-4" />
                   Regenerate Analysis
