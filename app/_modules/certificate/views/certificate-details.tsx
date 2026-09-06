@@ -1,4 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
+
+import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useState } from "react";
 
 import {
   Award,
@@ -33,6 +37,14 @@ export default function CertificateDetails({
     refetch,
   } = useGetCertificateById(certificateId);
 
+  const [verificationUrl, setVerificationUrl] = useState("");
+
+  useEffect(() => {
+    setVerificationUrl(
+      `${window.location.origin}/certificates/verify/${certificate?.certificateNumber}`,
+    );
+  }, [certificate?.certificateNumber]);
+
   if (isLoading) {
     return <CardSkeleton />;
   }
@@ -56,6 +68,7 @@ export default function CertificateDetails({
     certificate.issueDate ?? certificate.createdAt,
   );
 
+
   const handlePrint = () => {
     window.print();
   };
@@ -66,8 +79,8 @@ export default function CertificateDetails({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `${certificate.course.title} Certificate`,
-          text: `${certificate.student.name} completed ${certificate.course.title}.`,
+          title: `${certificate.courseTitleSnapshot} Certificate`,
+          text: `${certificate.studentNameSnapshot} completed ${certificate.courseTitleSnapshot}.`,
           url: publicUrl,
         });
 
@@ -99,7 +112,8 @@ export default function CertificateDetails({
           </p>
 
           <h1 className="mt-1 text-xl font-semibold">
-            {certificate.course.title}
+            {certificate.courseTitleSnapshot} -{" "}
+            {certificate.studentNameSnapshot}
           </h1>
         </div>
 
@@ -153,7 +167,7 @@ export default function CertificateDetails({
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                {certificate.student.name ?? "Student"}
+                {certificate.studentNameSnapshot ?? "Student"}
               </h2>
 
               <p className="mt-7 text-sm text-[#6e6a61]">
@@ -161,7 +175,7 @@ export default function CertificateDetails({
               </p>
 
               <h3 className="mt-3 max-w-3xl text-2xl font-bold sm:text-3xl">
-                {certificate.course.title}
+                {certificate.courseTitleSnapshot ?? "Course Title"}
               </h3>
 
               <p className="mt-6 max-w-2xl text-sm leading-7 text-[#706b61]">
@@ -174,9 +188,7 @@ export default function CertificateDetails({
                 <CertificateMeta
                   icon={<UserRound className="size-4" />}
                   label="Instructor"
-                  value={
-                    certificate.course.instructor?.name ?? "LMS Instructor"
-                  }
+                  value={certificate.instructorNameSnapshot ?? "LMS Instructor"}
                 />
 
                 <CertificateMeta
@@ -194,16 +206,34 @@ export default function CertificateDetails({
 
               <div className="mt-12 grid w-full gap-10 sm:grid-cols-2">
                 <Signature
-                  name={certificate.course.instructor?.name ?? "Instructor"}
+                  name={certificate.instructorNameSnapshot ?? "Instructor"}
                   label="Instructor"
                 />
 
                 <Signature name="LMS" label="Authorized by" />
               </div>
 
-              <p className="mt-10 text-xs text-[#8a8478]">
-                Verify this certificate using its certificate number.
-              </p>
+              <div className="mt-10 flex flex-col items-center gap-4">
+                {verificationUrl && (
+                  <div className="rounded-lg border border-[#b89b5e]/50 bg-white p-2">
+                    <QRCodeSVG value={verificationUrl} size={90} level="M" />
+                  </div>
+                )}
+
+                <p className="max-w-xl text-xs leading-5 text-[#8a8478]">
+                  Scan the QR code or verify this certificate using certificate
+                  number{" "}
+                  <span className="font-medium">
+                    {certificate.certificateNumber}
+                  </span>
+                  .
+                  <br />
+                  This certificate is digitally signed and can be verified
+                  without a handwritten signature.
+                  <br />
+                  Signature version: {certificate.signatureVersion}
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -30,5 +30,7 @@ export interface ICertificateAPI {
     certificateId: string,
   ): Promise<Certificate>;
   findById(id: string): Promise<UserCertificate>;
-  findPublicByCertificateNum(certificateNumber: string) : Promise<PublicCertificate>;
+  findPublicByCertificateNum(
+    certificateNumber: string,
+  ): Promise<PublicCertificate>;
 }

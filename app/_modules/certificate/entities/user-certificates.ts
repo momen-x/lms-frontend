@@ -1,11 +1,6 @@
-export interface UserCertificate {
-  id: string;
-  certificateNumber: string;
-  courseId: string;
-  createdAt: string;
-  issueDate: string;
-  studentId: string;
-  updatedAt: string;
+import { Certificate } from "./certificate";
+
+export interface UserCertificate extends Certificate {
   course: {
     id: string;
     thumbnail: string;

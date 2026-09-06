@@ -1,16 +1,6 @@
-export interface PublicCertificate{
-  certificateNumber: string;
-  issueDate: string;
+import { Certificate } from "./certificate";
 
-  student: {
-    name: string;
-  };
-
-  course: {
-    title: string;
-
-    instructor: {
-      name: string;
-    };
-  };
+export interface PublicCertificate extends Certificate {
+  signed: boolean;
+  signatureValid: boolean;
 }

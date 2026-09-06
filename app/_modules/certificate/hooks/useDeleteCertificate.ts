@@ -18,19 +18,19 @@ export function useDeleteCertificate() {
     onSuccess: (certificate) => {
       queryClient.removeQueries({
         queryKey: certificateQueryKeys.detail(
-          certificate.courseId,
+          certificate.courseId!,
           certificate.id,
         ),
       });
 
       queryClient.invalidateQueries({
-        queryKey: certificateQueryKeys.course(certificate.courseId),
+        queryKey: certificateQueryKeys.course(certificate.courseId!),
       });
 
       queryClient.invalidateQueries({
         queryKey: certificateQueryKeys.student(
-          certificate.courseId,
-          certificate.studentId,
+          certificate.courseId!,
+          certificate.studentId!,
         ),
       });
 

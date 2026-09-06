@@ -17,18 +17,18 @@ export function useCreateCertificate() {
 
     onSuccess: (certificate) => {
       queryClient.setQueryData(
-        certificateQueryKeys.detail(certificate.courseId, certificate.id),
+        certificateQueryKeys.detail(certificate.courseId!, certificate.id),
         certificate,
       );
 
       queryClient.invalidateQueries({
-        queryKey: certificateQueryKeys.course(certificate.courseId),
+        queryKey: certificateQueryKeys.course(certificate.courseId!),
       });
 
       queryClient.invalidateQueries({
         queryKey: certificateQueryKeys.student(
-          certificate.courseId,
-          certificate.studentId,
+          certificate.courseId!,
+          certificate.studentId!,
         ),
       });
 

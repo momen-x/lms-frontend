@@ -69,24 +69,52 @@ export default function PublicCertificateVerification({
   }
 
   const issueDate = transformingTheDateToATextString(certificate.issueDate);
+  const isVerified = certificate?.signed && certificate.signatureValid;
+  const isUnsigned = !certificate?.signed;
 
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-start gap-3 rounded-2xl border bg-card p-4">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <div
+            className={`flex size-11 shrink-0 items-center justify-center rounded-full ${
+              isVerified
+                ? "bg-primary/10 text-primary"
+                : isUnsigned
+                  ? "bg-amber-500/10 text-amber-600"
+                  : "bg-destructive/10 text-destructive"
+            }`}
+          >
             <ShieldCheck className="size-5" />
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-semibold">Verified Certificate</h1>
+              <h1 className="font-semibold">
+                {isVerified
+                  ? "Verified Certificate"
+                  : isUnsigned
+                    ? "Unsigned Certificate"
+                    : "Invalid Certificate"}
+              </h1>
 
-              <BadgeCheck className="size-5 text-primary" />
+              <BadgeCheck
+                className={`size-5 ${
+                  isVerified
+                    ? "text-primary"
+                    : isUnsigned
+                      ? "text-amber-600"
+                      : "text-destructive"
+                }`}
+              />
             </div>
 
             <p className="mt-1 text-sm text-muted-foreground">
-              This certificate was issued by LMS and is valid.
+              {isVerified
+                ? "This certificate was issued by LMS and its digital signature is valid."
+                : isUnsigned
+                  ? "This certificate exists, but it does not contain a digital signature."
+                  : "This certificate could not be verified because its digital signature is invalid."}
             </p>
           </div>
         </div>
@@ -110,7 +138,7 @@ export default function PublicCertificateVerification({
                 </p>
 
                 <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  {certificate.student.name ?? "Student"}
+                  {certificate.studentNameSnapshot ?? "Student"}
                 </h2>
 
                 <p className="mt-7 text-sm text-[#6e6a61]">
@@ -118,7 +146,7 @@ export default function PublicCertificateVerification({
                 </p>
 
                 <h3 className="mt-3 max-w-3xl text-2xl font-bold sm:text-3xl">
-                  {certificate.course.title}
+                  {certificate.courseTitleSnapshot ?? "Course Title"}
                 </h3>
 
                 <p className="mt-6 max-w-2xl text-sm leading-7 text-[#706b61]">
@@ -132,7 +160,7 @@ export default function PublicCertificateVerification({
                     icon={<UserRound className="size-4" />}
                     label="Instructor"
                     value={
-                      certificate.course.instructor?.name ?? "LMS Instructor"
+                      certificate.instructorNameSnapshot ?? "LMS Instructor"
                     }
                   />
 
@@ -151,7 +179,7 @@ export default function PublicCertificateVerification({
 
                 <div className="mt-12 grid w-full gap-10 sm:grid-cols-2">
                   <Signature
-                    name={certificate.course.instructor?.name ?? "Instructor"}
+                    name={certificate.instructorNameSnapshot ?? "Instructor"}
                     label="Instructor"
                   />
 
