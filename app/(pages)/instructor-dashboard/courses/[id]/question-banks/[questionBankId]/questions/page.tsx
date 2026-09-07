@@ -16,12 +16,12 @@ interface QuestionBankQuestionsPageProps {
 export default async function QuestionBankQuestionsPage({
   params,
 }: QuestionBankQuestionsPageProps) {
-  const { questionBankId } = await params;
+  const { questionBankId, id } = await params;
 
   return (
     <QuestionDialogProvider>
       <ChoiceDialogProvider>
-        <QuestionBankQuestions questionBankId={questionBankId} />
+        <QuestionBankQuestions questionBankId={questionBankId} courseId={id} />
       </ChoiceDialogProvider>
     </QuestionDialogProvider>
   );
