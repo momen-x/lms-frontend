@@ -7,6 +7,8 @@ import {
   CircleHelp,
   Loader2,
   Plus,
+  RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -20,13 +22,18 @@ import { useQuestionDialog } from "../context/question-dialog-context";
 import { useDeleteQuestion } from "../hooks/useDeleteQuestion";
 import { useGetQuestionBankQuestions } from "../hooks/useGetQuestionBankQuestions";
 import QuestionCard from "./question-card";
+import { useGenerateQuizFromCourse } from "../../ai/hooks/useGenerateQuizFromCourse";
+import { useGetGeneratedCourseQuiz } from "../../ai/hooks/useGetGeneratedCourseQuiz";
+import { AiGenerateViewer } from "../../ai/views/ai-generate-viewer";
 
 interface QuestionBankQuestionsProps {
   questionBankId: string;
+  courseId: string;
 }
 
 export default function QuestionBankQuestions({
   questionBankId,
+  courseId,
 }: QuestionBankQuestionsProps) {
   const {
     data: questions,
@@ -69,6 +76,38 @@ export default function QuestionBankQuestions({
     }
   };
 
+  const {
+    mutate: generateQuiz,
+    isPending: isGenerating,
+    data: planData,
+  } = useGenerateQuizFromCourse();
+  const { data: savedQuiz } = useGetGeneratedCourseQuiz(courseId);
+  const quizData =
+    planData ??
+    (savedQuiz ? { content: savedQuiz.content, finishReason: null } : null);
+
+  const handleGenerateCourseQuiz = () => {
+    generateQuiz(courseId, {
+      onSuccess: (response) => {
+        if (response.cached) {
+          toast.info(
+            "The course content hasn’t changed, so the existing AI-generated course quiz is still up to date.",
+          );
+          return;
+        }
+
+        toast.success("AI course quiz generated successfully.");
+      },
+      onError: (error) => {
+        toast.error(
+          getErrorMessage(error) ??
+            "Failed to generate questions. Please try again.",
+        );
+        console.error("Quiz generation error:", error);
+      },
+    });
+  };
+
   if (isLoading) return <ListSkeleton />;
 
   return (
@@ -80,11 +119,51 @@ export default function QuestionBankQuestions({
             Manage the questions belonging to this question bank.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <BackBtn />
-          <Button type="button" size="sm" onClick={() => openCreateQuestion(questionBankId)}>
-            <Plus className="size-4" />
-            Add question
+        <div>
+          <div className="flex items-center gap-3">
+            <BackBtn />
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => openCreateQuestion(questionBankId)}
+            >
+              <Plus className="size-4" />
+              Add question
+            </Button>
+          </div>
+          <Button
+            variant="outline"
+            className="
+    border-purple-500/40
+    bg-purple-500/5
+    text-purple-600
+    transition-colors
+    hover:border-purple-500/70
+    hover:bg-purple-500/10
+    hover:text-purple-700
+    dark:text-purple-300
+    dark:hover:text-purple-200
+    mb-5
+  "
+            onClick={handleGenerateCourseQuiz}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="size-4 animate-spin mr-2" />
+                generating ...
+              </>
+            ) : savedQuiz?.content ? (
+              <>
+                <RefreshCw className="size-4" />
+                Regenerate Suggested Questions
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4" />
+                Make AI Suggests Questions
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -104,7 +183,13 @@ export default function QuestionBankQuestions({
               An error occurred while loading the question-bank questions.
             </p>
           </div>
-          <Button type="button" variant="outline" size="sm" disabled={isFetching} onClick={() => refetch()}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={isFetching}
+            onClick={() => refetch()}
+          >
             {isFetching && <Loader2 className="size-4 animate-spin" />}
             Try again
           </Button>
@@ -118,9 +203,15 @@ export default function QuestionBankQuestions({
           </div>
           <p className="font-medium">No questions yet</p>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-            This question bank does not contain any questions. Add the first question to begin building it.
+            This question bank does not contain any questions. Add the first
+            question to begin building it.
           </p>
-          <Button type="button" size="sm" className="mt-4" onClick={() => openCreateQuestion(questionBankId)}>
+          <Button
+            type="button"
+            size="sm"
+            className="mt-4"
+            onClick={() => openCreateQuestion(questionBankId)}
+          >
             <Plus className="size-4" />
             Add question
           </Button>
@@ -167,6 +258,15 @@ export default function QuestionBankQuestions({
           ))}
         </div>
       )}
+      <div>
+        {quizData?.content && (
+          <AiGenerateViewer
+            planData={quizData}
+            title=" Your AI Question Quiz Suggesting"
+            defaultOpen={false}
+          />
+        )}
+      </div>
     </section>
   );
 }

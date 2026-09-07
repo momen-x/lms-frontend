@@ -1,7 +1,12 @@
 "use client";
 
-import { AlertCircle, CircleHelp, Loader2, Plus, RefreshCw, Sparkles } from "lucide-react";
-import { toast } from "react-toastify";
+import {
+  AlertCircle,
+  CircleHelp,
+  Loader2,
+  Plus,
+
+} from "lucide-react";
 
 import BackBtn from "@/components/sharing/back-btn";
 import { ListSkeleton } from "@/components/skeletons/list-skeleton";
@@ -9,11 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { useQuizDialog } from "../context/quiz-dialog-context";
 import { useGetCourseQuizzes } from "../hooks/useGetCourseQuizzes";
-import { useGenerateQuizFromCourse } from "@/app/_modules/ai/hooks/useGenerateQuizFromCourse";
 import QuizCard from "./quiz-card";
-import { getErrorMessage } from "@/utils/get-axios-error-message";
-import { AiGenerateViewer } from "../../ai/views/ai-generate-viewer";
-import { useGetGeneratedCourseQuiz } from "../../ai/hooks/useGetGeneratedCourseQuiz";
 
 interface CourseQuizzesProps {
   courseId: string;
@@ -29,37 +30,6 @@ export default function CourseQuizzes({ courseId }: CourseQuizzesProps) {
     isFetching,
   } = useGetCourseQuizzes(courseId);
   const { openCreateQuiz } = useQuizDialog();
-  const {
-    mutate: generateQuiz,
-    isPending: isGenerating,
-    data: planData,
-  } = useGenerateQuizFromCourse();
-  const { data: savedQuiz } = useGetGeneratedCourseQuiz(courseId);
-  const quizData =
-    planData ??
-    (savedQuiz ? { content: savedQuiz.content, finishReason: null } : null);
-
-  const handleGenerateCourseQuiz = () => {
-    generateQuiz(courseId, {
-      onSuccess: (response) => {
-        if (response.cached) {
-          toast.info(
-            "The course content hasn’t changed, so the existing AI-generated course quiz is still up to date.",
-          );
-          return;
-        }
-
-        toast.success("AI course quiz generated successfully.");
-      },
-      onError: (error) => {
-        toast.error(
-          getErrorMessage(error) ??
-            "Failed to generate questions. Please try again.",
-        );
-        console.error("Quiz generation error:", error);
-      },
-    });
-  };
 
   if (isLoading) return <ListSkeleton />;
 
@@ -67,40 +37,6 @@ export default function CourseQuizzes({ courseId }: CourseQuizzesProps) {
     <section className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div>
-            <Button
-              variant="outline"
-              className="
-    border-purple-500/40
-    bg-purple-500/5
-    text-purple-600
-    transition-colors
-    hover:border-purple-500/70
-    hover:bg-purple-500/10
-    hover:text-purple-700
-    dark:text-purple-300
-    dark:hover:text-purple-200
-    mb-5
-  "
-              onClick={handleGenerateCourseQuiz}
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="size-4 animate-spin mr-2" />
-                  generating ...
-                </>
-              ) : savedQuiz?.content ? (<>
-               <RefreshCw className="size-4" />
-                Regenerate Suggested Questions
-              </>) : (
-                <>
-                  <Sparkles className="size-4" />
-                  Make AI Suggests Questions
-                </>
-              )}
-            </Button>
-          </div>
           <h3 className="font-semibold">Quizzes</h3>
           <p className="text-sm text-muted-foreground">
             Manage quizzes attached to this course.
@@ -177,16 +113,6 @@ export default function CourseQuizzes({ courseId }: CourseQuizzesProps) {
           ))}
         </div>
       )}
-
-      <div>
-        {quizData?.content && (
-          <AiGenerateViewer
-            planData={quizData}
-            title=" Your AI Question Quiz Suggesting"
-            defaultOpen={false}
-          />
-        )}
-      </div>
     </section>
   );
 }
