@@ -144,6 +144,7 @@ export default function QuestionBankQuestions({
     dark:text-purple-300
     dark:hover:text-purple-200
     mb-5
+    mt-3
   "
             onClick={handleGenerateCourseQuiz}
             disabled={isGenerating}
