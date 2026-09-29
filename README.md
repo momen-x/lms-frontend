@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🎓 LMS — Learning Management System
+# 🎓 LMS Frontend — Next.js
 
-### A production-oriented full-stack learning platform for discovering courses, learning progressively, taking quizzes, completing payments, and earning verifiable certificates.
+### User-facing application for a full Learning Management System with integrated AI-assisted learning and authoring workflows
 
-**Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · TanStack Query · Axios · NestJS API · PostgreSQL · Prisma · Stripe**
+**Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · TanStack Query · Axios · Zod · React Hook Form**
 
 [Live Demo](https://lms-next-rust.vercel.app)
 
@@ -12,86 +12,30 @@
 
 ---
 
-## ✨ Overview
+## 📌 Overview
 
-This frontend is the user-facing application for a full Learning Management System with separate experiences for **students, instructors, and administrators**.
+This repository contains the frontend for a full Learning Management System supporting separate experiences for **students, instructors, and administrators**.
 
-The platform covers the complete learning journey:
+The application covers the complete learning journey:
 
 - discover and filter courses
 - view course details
 - enroll in free or paid courses
-- continue from the last learning position
-- study lessons and course media
+- continue from the last saved learning position
+- study lesson media
 - take timed quizzes with multiple attempts
-- track progress
-- write course reviews when eligible
+- track course progress
+- write eligible course reviews
 - complete courses
-- earn certificates
-- publicly verify issued certificates
+- view and verify certificates
 - manage courses, learners, quizzes, question banks, and approvals
+- use AI-assisted learning and instructor tools through the backend API
 
-The frontend follows a **feature-based architecture** and communicates with the backend through a **same-origin Next.js API proxy** in production.
-
----
-
-## 🖼️ Product Tour
-
-### Landing Experience
-
-<p align="center">
-  <img src="./public/readme-assets/landing-page.png" alt="LMS landing page" width="100%" />
-</p>
-
-### Course Discovery & Course Details
-
-<p align="center">
-  <img src="./public/readme-assets/course-discovery.png" alt="Course discovery" width="49%" />
-  <img src="./public/readme-assets/course-details.png" alt="Course details" width="49%" />
-</p>
-
-### Student Dashboard & Resume Learning
-
-<p align="center">
-  <img src="./public/readme-assets/student-dashboard.png" alt="Student dashboard" width="49%" />
-  <img src="./public/readme-assets/resume-learning.png" alt="Resume learning" width="49%" />
-</p>
-
-### Learning Workspace
-
-<p align="center">
-  <img src="./public/readme-assets/learning-experience.png" alt="Learning experience" width="100%" />
-</p>
-
-### Quiz System
-
-<p align="center">
-  <img src="./public/readme-assets/quiz-system.png" alt="Quiz attempt system" width="100%" />
-</p>
-
-### Stripe Checkout & Payment Confirmation
-
-<p align="center">
-  <img src="./public/readme-assets/stripe-checkout.png" alt="Stripe checkout" width="49%" />
-  <img src="./public/readme-assets/payment-successful.png" alt="Payment successful" width="49%" />
-</p>
-
-### Instructor & Admin Dashboards
-
-<p align="center">
-  <img src="./public/readme-assets/instructor-dashboard.png" alt="Instructor dashboard" width="49%" />
-  <img src="./public/readme-assets/admin-dashboard.png" alt="Admin dashboard" width="49%" />
-</p>
-
-### Certificate & Public Verification
-
-<p align="center">
-  <img src="./public/readme-assets/certificate.png" alt="Verified course certificate" width="100%" />
-</p>
+The frontend follows a **feature-based modular architecture** and communicates with the backend through a **same-origin Next.js `/api` rewrite** in production.
 
 ---
 
-# 🚀 Core Product Capabilities
+# ✨ Core Product Capabilities
 
 ## 👨‍🎓 Student Experience
 
@@ -103,7 +47,7 @@ Students can:
 - pay for premium courses through Stripe Checkout
 - access a personal learning dashboard
 - resume from the last saved learning position
-- consume lesson media including:
+- consume lesson media:
   - video
   - audio
   - documents
@@ -124,8 +68,6 @@ Students can:
 - manage profile data
 - receive in-app notifications
 
----
-
 ## 👨‍🏫 Instructor Experience
 
 Instructors can:
@@ -134,25 +76,13 @@ Instructors can:
 - manage draft and published course content
 - submit courses for admin review
 - organize courses into sections
-- manage lessons
-- attach lesson media
+- manage lessons and lesson media
 - create question banks
 - create questions and answer choices
-- mark correct choices
-- create and manage quizzes
-- configure:
-  - duration
-  - passing score
-  - maximum attempts
-  - marks
-  - question bank
+- configure quizzes
 - view enrolled students
-- view course certificates
-- issue certificates
-- delete certificates
-- monitor course statistics from the instructor dashboard
-
----
+- manage course certificates
+- monitor course statistics
 
 ## 🛡️ Admin Experience
 
@@ -160,48 +90,264 @@ Admins can:
 
 - view platform-level statistics
 - manage users
-- filter and inspect users
-- delete users
 - manage categories
-- manage courses
-- inspect instructor courses
-- view course enrollments
+- inspect courses and enrollments
 - review submitted courses
-- approve pending courses
-- reject pending courses
+- approve or reject pending courses
 
 ---
 
-# 🧭 Learning Journey
+# 🤖 AI Integration
 
-```mermaid
-flowchart LR
-    A[Discover Course] --> B[View Course Details]
-    B --> C{Free or Paid?}
-    C -->|Free| D[Enroll]
-    C -->|Paid| E[Stripe Checkout]
-    E --> D
-    D --> F[Start Learning]
-    F --> G[Lessons + Progress]
-    G --> H[Resume Learning]
-    H --> I[Quiz Attempts]
-    I --> J{Requirements Completed?}
-    J -->|No| G
-    J -->|Yes| K[Course Completed]
-    K --> L[Certificate Issued]
-    L --> M[Public Verification]
+The frontend AI integration lives under:
+
+```text
+app/_modules/ai
+```
+
+This repository demonstrates **API consumption, UI integration, response contracts, query state, and rendering behavior**.
+
+It does **not** independently define the active AI provider, embedding pipeline, vector persistence, background queue processing, or backend authorization rules.
+
+## AI Frontend Data Flow
+
+```text
+Page / View
+   ↓
+TanStack Query Hook
+   ↓
+resAi / IAiAPI
+   ↓
+Shared Axios Client
+   ↓
+Next.js /api Rewrite
+   ↓
+Backend API
+```
+
+The frontend does not use any AI provider SDK or provider credentials directly.
+
+Relevant frontend dependencies include:
+
+- `@tanstack/react-query`
+- `axios`
+- `react-markdown`
+- `remark-gfm`
+- `zod`
+- `react-toastify`
+
+---
+
+## 🎓 Student-Facing AI Features
+
+### Course Assistant
+- integrated into the student course page
+- loads persisted conversation history from the backend
+- submits questions for the current course
+- assistant responses can include retrieval sources
+
+### Lesson Assistant
+- integrated into the lesson learning view
+- loads persisted lesson conversation history
+- submits questions for the current lesson
+- assistant responses can include retrieval sources
+
+### Lesson Summaries
+Students can:
+
+- request a generated lesson summary
+- retrieve a previously generated summary
+- regenerate the summary
+
+### Study Plans
+Students can:
+
+- request a generated study plan for a course
+- retrieve an existing plan
+- regenerate the plan
+
+> The current UI does not collect personal goals, available hours, or scheduling preferences as generation inputs.
+
+### Student Quiz Performance Analysis
+The quiz learning view can display:
+
+- AI analysis report
+- pass/fail state
+- passing threshold
+- best score
+- latest score
+- attempt count
+- incorrect answers
+- unanswered questions
+
+Existing non-AI quiz statistics remain separate from the generated AI analysis.
+
+---
+
+## 👨‍🏫 Instructor-Facing AI Features
+
+Instructor-facing integrations include:
+
+- AI-generated lesson suggestions for a course
+- AI-generated quiz-question suggestions based on a lesson
+- AI-generated course-level quiz content
+- AI aggregate quiz-performance analysis
+- retrieval of previously generated suggestions and reports
+
+Generated lesson and quiz suggestions are rendered as text/Markdown.
+
+> Generated AI content is not automatically imported into canonical LMS lesson, quiz, question, or question-bank records by the inspected frontend flows.
+
+---
+
+# 💬 AI Conversation Behavior
+
+A shared `AiAssistant` component handles course and lesson conversations.
+
+Implemented behavior includes:
+
+- backend-backed history loading
+- query invalidation after successful question submission
+- explicit loading, error, empty, and pending UI states
+- duplicate-submission prevention while a request is pending
+- question trimming and empty-input rejection
+- textarea limit of 1,000 characters
+- failed-question restoration
+- formatted message timestamps
+- Markdown rendering with GFM support
+- collapsible retrieval-source lists
+
+Displayed source metadata can include:
+
+- source count
+- page number
+- chunk number
+- short content excerpt
+
+Source contracts can also contain media IDs, similarity scores, and time ranges, but those values are not currently exposed as playable timestamps, source navigation, or score indicators.
+
+AI responses use ordinary HTTP requests. There is currently no streaming, SSE, or WebSocket AI response flow.
+
+---
+
+# 🧠 AI Query State & Client Caching
+
+AI queries are grouped under the `"ai"` query-key namespace.
+
+Current patterns include:
+
+- resource-scoped query keys
+- generated-result retrieval through GET endpoints
+- `setQueryData` after generation/analysis mutations
+- conversation-history invalidation after assistant mutations
+- backend `cached` flag handling in generated-result views
+- regenerate actions that repeat the generation request
+- five-minute shared `staleTime`
+- no automatic query retry
+- no refetch on window focus
+- `gcTime: 0`
+
+Backend result reuse and TanStack Query caching are separate concerns. Fingerprints and backend content-change detection are not generated by the frontend.
+
+---
+
+# 🔌 AI API Routes Consumed by the Frontend
+
+## POST
+
+```text
+/api/courses/:courseId/ai/ask
+/api/lessons/:lessonId/ai/ask
+/api/lessons/:lessonId/ai/summary
+/api/courses/:courseId/ai/quiz/generate
+/api/lessons/:lessonId/ai/quiz/generate
+/api/courses/:courseId/ai/lessons/generate
+/api/quizzes/:quizId/ai/performance
+/api/quizzes/:quizId/ai/instructor-analysis
+/api/courses/:courseId/ai/study-plan
+```
+
+## GET
+
+```text
+/api/courses/:courseId/ai/history
+/api/lessons/:lessonId/ai/history
+/api/lessons/:lessonId/ai/summary/generated
+/api/courses/:courseId/ai/quiz/generated
+/api/lessons/:lessonId/ai/quiz/generated
+/api/courses/:courseId/ai/lessons/generated
+/api/quiz-performance/:quizId
+/api/quizzes/:quizId/ai/instructor-analysis
+/api/courses/:courseId/ai/study-plan/generated
 ```
 
 ---
 
-# 🧱 Frontend Architecture
+# 🔐 Authentication & Security Integration
+
+The frontend uses the shared authentication infrastructure for both normal LMS and AI requests.
+
+Implemented behavior includes:
+
+- `withCredentials: true`
+- JWT-based backend authentication
+- access/refresh session handling
+- centralized CSRF handling
+- `X-CSRF-Token` injection for unsafe requests
+- bounded retry after invalid CSRF state
+- bounded auth-refresh retry after eligible `401` responses
+- shared in-flight CSRF requests
+- shared in-flight refresh requests
+- role-aware client guards
+- Zod-based validation
+- TypeScript strict mode
+
+The instructor dashboard uses a role guard for the instructor role.
+
+The student dashboard uses an authentication guard. AI hooks themselves only check whether the required resource ID exists; server-side authorization remains the backend responsibility.
+
+> Client-side route guards improve UX but are not the security boundary.
+
+---
+
+# 🌐 Production API Architecture
+
+The frontend is deployed separately from the backend.
+
+Browser requests are routed through the frontend origin:
+
+```mermaid
+flowchart LR
+    A[Browser] --> B[Next.js / Vercel]
+    B -->|/api/* rewrite| C[NestJS Backend]
+    C --> D[(PostgreSQL)]
+```
+
+This same-origin browser API strategy was introduced to avoid production problems caused by cross-site cookie behavior on stricter mobile and private-browsing environments.
+
+The frontend uses relative routes such as:
+
+```text
+/api/auth/login
+/api/auth/refresh
+/api/auth/csrf-token
+/api/courses
+/api/users/me
+```
+
+and forwards them to the configured backend through `next.config.ts`.
+
+---
+
+# 🧩 Frontend Architecture
 
 The project uses a **feature-module architecture**.
 
 ```text
 app/
-├── (pages)/                    # App Router pages
-├── _modules/                   # Domain-based feature modules
+├── (pages)/
+├── _modules/
+│   ├── ai/
 │   ├── auth/
 │   ├── course/
 │   ├── enrollment/
@@ -231,7 +377,7 @@ public/
 └── readme-assets/
 ```
 
-Most domain modules follow a layered structure similar to:
+Most domain modules follow a structure similar to:
 
 ```text
 feature/
@@ -243,7 +389,7 @@ feature/
 └── views/
 ```
 
-A typical data flow is:
+Typical data flow:
 
 ```text
 Repository → React Query Hook → View
@@ -251,183 +397,31 @@ Repository → React Query Hook → View
 
 ---
 
-# 🌐 Production API Architecture
-
-The frontend is deployed on **Vercel** while the backend runs separately.
-
-Instead of allowing the browser to call the backend directly, production requests are routed through the frontend origin:
+# 🧭 Learning Journey
 
 ```mermaid
 flowchart LR
-    A[Browser] --> B[Vercel / Next.js]
-    B -->|/api/* rewrite| C[Backend API]
-    C --> D[(Database)]
+    A[Discover Course] --> B[View Course Details]
+    B --> C{Free or Paid?}
+    C -->|Free| D[Enroll]
+    C -->|Paid| E[Stripe Checkout]
+    E --> D
+    D --> F[Start Learning]
+    F --> G[Lessons + Progress]
+    G --> H[Resume Learning]
+    H --> I[Quiz Attempts]
+    I --> J{Requirements Completed?}
+    J -->|No| G
+    J -->|Yes| K[Course Completed]
+    K --> L[Certificate Issued]
+    L --> M[Public Verification]
 ```
-
-The rewrite is configured in `next.config.ts`:
-
-```ts
-async rewrites() {
-  return [
-    {
-      source: "/api/:path*",
-      destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
-    },
-  ];
-}
-```
-
-This keeps browser API traffic on relative paths such as:
-
-```text
-/api/auth/login
-/api/auth/refresh
-/api/auth/csrf-token
-/api/courses
-/api/users/me
-```
-
----
-
-# 🔐 Authentication & Security
-
-The frontend authentication flow is cookie-based from the browser's perspective.
-
-Implemented security behavior includes:
-
-- `withCredentials: true`
-- JWT-based backend authentication
-- access/refresh session handling
-- centralized CSRF handling
-- `X-CSRF-Token` injection for unsafe requests
-- CSRF token caching in memory
-- single-flight CSRF requests
-- single-flight refresh requests
-- one-time retry flags
-- automatic refresh after eligible `401` responses
-- automatic CSRF recovery after an invalid CSRF response
-- login/register/logout session-state invalidation
-- Google OAuth
-- GitHub OAuth
-- role-aware client guards
-- Zod-based validation
-- TypeScript strict mode
-
-> Client guards improve UX, but backend authorization remains the actual security boundary.
-
----
-
-# 🧩 Production Engineering Challenges
-
-This section documents real production issues encountered during deployment and the fixes applied.
-
-## 1. Stale Session / CSRF State
-
-### Problem
-
-A user could leave the application without explicitly pressing logout.
-
-After the authentication session expired, stale session/CSRF cookies could remain in the browser. Reusing stale CSRF state could cause requests to fail with an invalid CSRF response.
-
-### Resolution
-
-The CSRF flow was updated so that:
-
-- invalid cached CSRF state is cleared
-- a fresh CSRF token can be requested
-- the original request is retried once
-- authentication mutations clear old in-memory CSRF state
-- refresh operations clear CSRF state because session cookies may rotate
-
-This allows the application to recover without requiring users to manually clear browser cookies.
-
----
-
-## 2. Mobile & Private Browsing Authentication
-
-### Problem
-
-The frontend and backend were originally accessed from different sites:
-
-```text
-Frontend → Vercel
-Backend  → Render
-```
-
-That meant authentication depended on cross-site cookies.
-
-This worked in normal desktop browsing, but mobile browsers and private/incognito modes apply stricter third-party cookie rules, which caused authentication flows to fail.
-
-### Resolution
-
-All browser API traffic was moved behind the frontend origin:
-
-```text
-Browser
-   ↓
-Vercel /api/*
-   ↓
-Next.js Rewrite
-   ↓
-Backend API
-```
-
-This made the browser-side API flow same-origin.
-
----
-
-## 3. Incomplete Proxy Migration
-
-After introducing the API proxy, normal Axios requests were routed through `/api`, but some authentication requests still called the backend directly.
-
-The remaining direct calls included:
-
-- CSRF token requests
-- refresh requests
-- OAuth entry points
-
-That created inconsistent cookie origins.
-
-### Resolution
-
-All authentication-related browser requests were migrated to relative `/api/...` routes so that they use the same proxy path as the rest of the application.
-
----
-
-## 4. OAuth State Mismatch
-
-After moving the OAuth callback through the frontend proxy, the OAuth flow temporarily failed with:
-
-```text
-Invalid OAuth state
-```
-
-The OAuth flow started on one origin while the callback completed through another.
-
-### Resolution
-
-Both the OAuth start and OAuth callback were routed through the same frontend `/api` origin.
-
-Final flow:
-
-```text
-Browser
-→ /api/auth/google
-→ Backend
-→ Google
-→ /api/auth/google/callback
-→ Backend
-```
-
-The same proxy strategy applies to GitHub OAuth entry points.
 
 ---
 
 # 💳 Payments
 
-Paid course enrollment is backend-driven and uses Stripe Checkout.
-
-Flow:
+Paid enrollment uses Stripe Checkout through the backend.
 
 ```mermaid
 sequenceDiagram
@@ -440,12 +434,12 @@ sequenceDiagram
     F->>B: POST /api/payments/checkout/:courseId
     B-->>F: checkoutUrl
     F->>S: Redirect to Stripe Checkout
-    S-->>F: /payments/success?session_id=...
+    S-->>F: Return to payment success page
     F->>B: Verify checkout session
     B-->>F: Payment status
 ```
 
-The payment success page supports:
+The payment success UI handles:
 
 - pending
 - completed
@@ -453,13 +447,13 @@ The payment success page supports:
 - expired
 - refunded
 
-Pending payment verification is retried automatically.
+Pending verification is retried automatically.
 
 ---
 
 # 🧠 Quiz System
 
-The quiz experience includes:
+The frontend quiz experience includes:
 
 - question banks
 - reusable questions
@@ -478,34 +472,21 @@ The quiz experience includes:
 - score calculation
 - pass/fail state
 - retry support
-- perfect-score handling
-
-Student attempt endpoints include:
-
-```text
-POST /api/quizzes/:quizId/attempts
-GET  /api/quiz-attempts/:attemptId
-PUT  /api/quiz-attempts/:attemptId/answers/:questionId
-POST /api/quiz-attempts/:attemptId/submit
-GET  /api/quizzes/:quizId/my-attempts
-```
 
 ---
 
 # 🏆 Certificates
 
-Certificates are integrated into the learning flow.
-
-Supported frontend capabilities include:
+Frontend certificate capabilities include:
 
 - view current user's certificates
 - view certificate details
 - public certificate verification
 - share certificate
-- clipboard fallback
+- copy/share fallback
 - print certificate
 - instructor certificate management
-- certificate issue/delete operations
+- issue/delete operations where authorized
 
 Public verification route:
 
@@ -517,13 +498,9 @@ Public verification route:
 
 # ⭐ Reviews
 
-Students can create reviews when:
+Students can create reviews when repository-defined eligibility rules are met.
 
-- they are enrolled
-- course progress reaches at least 50%
-- eligibility rules are satisfied
-
-Implemented review operations include:
+Implemented operations include:
 
 - create
 - list
@@ -536,7 +513,7 @@ Implemented review operations include:
 
 # 🔔 Notifications
 
-Authenticated users have a global notification center with:
+Authenticated users have a notification center with:
 
 - unread count
 - paginated notifications
@@ -544,11 +521,7 @@ Authenticated users have a global notification center with:
 - mark one as read
 - mark all as read
 - delete notification
-- visual status types:
-  - info
-  - success
-  - warning
-  - error
+- info/success/warning/error presentation states
 
 ---
 
@@ -556,8 +529,8 @@ Authenticated users have a global notification center with:
 
 | Area | Technology |
 |---|---|
-| Framework | Next.js 16.2.10 |
-| UI Runtime | React 19.2.4 |
+| Framework | Next.js 16 |
+| UI Runtime | React 19 |
 | Language | TypeScript |
 | Styling | Tailwind CSS 4 |
 | Component System | shadcn/ui + Base UI |
@@ -565,6 +538,7 @@ Authenticated users have a global notification center with:
 | HTTP Client | Axios |
 | Forms | React Hook Form |
 | Validation | Zod |
+| Markdown | react-markdown + remark-gfm |
 | Theme | next-themes |
 | Icons | Lucide React |
 | Notifications UI | React Toastify |
@@ -581,41 +555,39 @@ Authenticated users have a global notification center with:
 
 ## Prerequisites
 
-Make sure you have:
-
 - Node.js
 - pnpm
 - access to the LMS backend API
 
-## Install dependencies
+## Install
 
 ```bash
 pnpm install
 ```
 
-## Environment variables
+## Environment
 
-Create a local `.env` file:
+Create `.env` or `.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
-The variable should point to the backend origin **without** `/api` at the end.
+The backend origin should be provided **without** `/api` at the end.
 
-## Start development
+## Start Development
 
 ```bash
 pnpm dev
 ```
 
-The frontend will normally run on:
+Frontend:
 
 ```text
 http://localhost:3000
 ```
 
-API calls are sent to:
+Browser API requests are sent through:
 
 ```text
 http://localhost:3000/api/*
@@ -625,7 +597,7 @@ and rewritten to the configured backend.
 
 ---
 
-# 📜 Available Scripts
+# 📜 Scripts
 
 | Command | Purpose |
 |---|---|
@@ -636,109 +608,25 @@ and rewritten to the configured backend.
 
 ---
 
-# 🛣️ Important Routes
+# ⚠️ Current Frontend Limitations
 
-### Public
+Current source-level observations include:
 
-```text
-/
- /about
- /contact
- /courses
- /courses/[id]
- /certificates/verify/[id]
- /privacy
- /terms
-```
+- no streamed AI responses
+- no conversation deletion UI
+- no AI-generated-content import flow into canonical authoring records
+- no source-media navigation from AI citations
+- no AI indexing-status interface
+- no frontend AI provider configuration
+- no frontend token/cost accounting
+- no dedicated frontend AI quota controls
+- instructor analysis POST and GET response contracts differ
+- some instructor aggregate metric cards remain incomplete
+- some saved-result fetch failures are presented like empty states
+- study-plan content currently uses a generic viewer label that does not match the feature name
+- frontend AI query cache is not explicitly user-scoped on logout
 
-### Authentication
-
-```text
-/login
-/register
-/forgot-password
-/reset-password
-/verify-email
-/verification-email
-/check-your-email
-/oauth/success
-```
-
-### Student
-
-```text
-/student-dashboard
-/student-dashboard/courses
-/student-dashboard/explore-courses
-/student-dashboard/certificates
-/courses/[id]/learning
-```
-
-### Instructor
-
-```text
-/instructor-dashboard
-/instructor-dashboard/courses
-/instructor-dashboard/courses/create
-/instructor-dashboard/courses/[id]/details
-/instructor-dashboard/courses/[id]/sections
-/instructor-dashboard/courses/[id]/students
-/instructor-dashboard/courses/[id]/certificates
-/instructor-dashboard/courses/[id]/questions-bank-table
-/instructor-dashboard/courses/[id]/quizzes
-```
-
-### Admin
-
-```text
-/admin-dashboard
-/admin-dashboard/users
-/admin-dashboard/categories
-/admin-dashboard/courses
-/admin-dashboard/pending-courses
-```
-
----
-
-# 📌 Current Scope Notes
-
-The following items are intentionally **not presented as completed features**:
-
-- Learning Streak is currently marked as coming soon.
-- No frontend automated test suite is currently configured.
-- Admin and instructor payment-management pages are not currently implemented.
-- The certificate “Download PDF” action currently relies on browser print behavior.
-- Some sidebar links exist ahead of their corresponding pages.
-- Some public course tab content is still placeholder content.
-
-These items are kept explicit so the README reflects the actual repository state.
-
----
-
-# 📁 Screenshot Assets
-
-README screenshots are stored in:
-
-```text
-public/readme-assets/
-```
-
-Current assets include:
-
-```text
-landing-page.png
-course-discovery.png
-course-details.png
-student-dashboard.png
-resume-learning.png
-learning-experience.png
-quiz-system.png
-stripe-checkout.png
-payment-successful.png
-instructor-dashboard.png
-admin-dashboard.png
-certificate.png
-```
+These are implementation notes, not claims of verified runtime failures.
 
 ---
 
